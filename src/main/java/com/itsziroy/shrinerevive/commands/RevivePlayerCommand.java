@@ -1,8 +1,9 @@
 package com.itsziroy.shrinerevive.commands;
 
 import com.itsziroy.shrinerevive.ShrineRevive;
+import com.itsziroy.shrinerevive.events.ShrineRevivedPlayerEvent;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 
 public class RevivePlayerCommand extends Command{
     private final ShrineRevive plugin;
@@ -14,11 +15,13 @@ public class RevivePlayerCommand extends Command{
 
     @Override
     public boolean execute(CommandSender sender, String[] args) {
-        Player player = plugin.getServer().getPlayer(args[0]);
+        OfflinePlayer player = plugin.getServer().getOfflinePlayer(args[0]);
         if (player != null) {
             if(plugin.getPlayerManager().isDead(player)) {
                 plugin.getPlayerManager().removeDeadPlayer(player);
                 plugin.getShrineTimeManager().endRevive(player);
+
+                plugin.getRedis().getMessanger().send(new ShrineRevivedPlayerEvent(player.getUniqueId().toString(), player.getName()));
                 sender.sendMessage("Revived player " + player.getName());
             } else {
                 sender.sendMessage("Player is not dead.");

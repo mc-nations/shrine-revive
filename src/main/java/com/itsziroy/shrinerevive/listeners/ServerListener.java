@@ -10,6 +10,8 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
 
+import java.util.Calendar;
+
 public class ServerListener implements Listener {
     private final ShrineRevive plugin;
 
@@ -24,7 +26,9 @@ public class ServerListener implements Listener {
             if(!Command.hasPermission(player, "shrine.bypass_death")) {
                 PlayerTime playerTime = plugin.getShrineTimeManager().get(player);
                 if(playerTime != null) {
-                    event.disallow(PlayerLoginEvent.Result.KICK_OTHER, PlayerManager.DEATH_REVIVE_MESSAGE(playerTime.time()));
+                    event.disallow(PlayerLoginEvent.Result.KICK_OTHER, PlayerManager.DEATH_REVIVE_MESSAGE(
+                            ShrineRevive.SHRINE_REVIVE_TIMEOUT - (Calendar.getInstance().getTimeInMillis() - playerTime.time())
+                    ));
                     return;
                 }
                 event.disallow(PlayerLoginEvent.Result.KICK_OTHER, PlayerManager.DEATH_KICK_MESSAGE);

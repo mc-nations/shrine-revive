@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.itsziroy.shrinerevive.ShrineRevive;
 import org.bukkit.ChatColor;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
 import java.io.File;
@@ -22,10 +23,10 @@ public class PlayerManager {
         Duration duration = Duration.ofMillis(time);
         long HH = duration.toHours();
         long MM = duration.toMinutesPart();
-        String timeInHHMMSS = String.format("%02d:%02d", HH, MM);
+        String timeString = HH + ":" + MM;
 
         return ChatColor.RED + "You died. \n\n" +
-                ChatColor.GRAY + "A player has picked up your token and you will be revived in " + ChatColor.AQUA + timeInHHMMSS;
+                ChatColor.GRAY + "A player has picked up your token and you will be revived in " + ChatColor.AQUA + timeString;
     }
     private final ShrineRevive plugin;
 
@@ -79,8 +80,15 @@ public class PlayerManager {
     public boolean isDead(Player player) {
         return this.deadPlayers.contains(player.getUniqueId().toString());
     }
+    public boolean isDead(OfflinePlayer player) {
+        return this.deadPlayers.contains(player.getUniqueId().toString());
+    }
 
     public void removeDeadPlayer(Player player) {
+        this.deadPlayers.remove(player.getUniqueId().toString());
+        this.write();
+    }
+    public void removeDeadPlayer(OfflinePlayer player) {
         this.deadPlayers.remove(player.getUniqueId().toString());
         this.write();
     }

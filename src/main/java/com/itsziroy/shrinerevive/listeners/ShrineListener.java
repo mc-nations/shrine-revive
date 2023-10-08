@@ -40,15 +40,13 @@ public class ShrineListener implements Listener {
 
                     // Hopper is shrine
                     if(customBlockData.has(ItemKeys.SHRINE, PersistentDataType.BOOLEAN)) {
-                        OfflinePlayer player = plugin.getServer().getPlayer(UUID.fromString(playerUid));
+                        OfflinePlayer player = plugin.getServer().getOfflinePlayer(UUID.fromString(playerUid));
 
-                        if (player != null) {
-                            plugin.getShrineTimeManager().startRevive(player);
-                            plugin.getRedis().getMessanger().send(new ShrineReceivedPlayerTokenEvent(player));
+                        plugin.getShrineTimeManager().startRevive(player);
+                        plugin.getRedis().getMessanger().send(new ShrineReceivedPlayerTokenEvent(player));
 
-                            event.setCancelled(true);
-                            event.getItem().remove();
-                        }
+                        event.setCancelled(true);
+                        event.getItem().remove();
                     }
                 }
             }
