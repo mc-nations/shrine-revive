@@ -7,6 +7,4 @@ softdepend:
 
 commands:
   shrine:
-    usage: |
-      /shrine create - Create a new shrine object
     permission: shrine.default

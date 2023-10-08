@@ -23,9 +23,9 @@ public class ShrineReviveToken implements Item {
         ItemStack item = new ItemStack(Material.PLAYER_HEAD, amount);
         SkullMeta skull = (SkullMeta) Objects.requireNonNull(item.getItemMeta());
 
-        skull.setDisplayName(player.getName());
+        skull.setDisplayName(player.getName() + " Revive Token");
         ArrayList<String> lore = new ArrayList<>();
-        lore.add("Custom head");
+        lore.add("This token can be used to revive the player");
         skull.setLore(lore);
         skull.setOwningPlayer(player);
 

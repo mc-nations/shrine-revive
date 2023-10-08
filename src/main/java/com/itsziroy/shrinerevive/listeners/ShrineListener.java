@@ -43,7 +43,11 @@ public class ShrineListener implements Listener {
                         OfflinePlayer player = plugin.getServer().getPlayer(UUID.fromString(playerUid));
 
                         if (player != null) {
+                            plugin.getShrineTimeManager().startRevive(player);
                             plugin.getRedis().getMessanger().send(new ShrineReceivedPlayerTokenEvent(player));
+
+                            event.setCancelled(true);
+                            event.getItem().remove();
                         }
                     }
                 }

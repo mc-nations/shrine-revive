@@ -5,12 +5,9 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
+public class CreateShrineCommand extends Command {
 
-import java.util.Objects;
-
-public class CommandCreateShrine extends Command {
-
-    public CommandCreateShrine() {
+    public CreateShrineCommand() {
         super("create");
     }
 
