@@ -12,6 +12,7 @@ import com.itsziroy.shrinerevive.managers.PlayerManager;
 import com.itsziroy.shrinerevive.managers.ShrineTimeManager;
 import com.jeff_media.customblockdata.CustomBlockData;
 import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -94,6 +95,14 @@ public final class ShrineRevive extends JavaPlugin {
                     }
             }};
         } else {
+            if(Objects.equals(args[0], "revive")) {
+                return new ArrayList<>() {{
+                    for (String playerId: playerManager.getDeadPlayers()) {
+                        OfflinePlayer offlinePlayer = getServer().getOfflinePlayer(UUID.fromString(playerId));
+                        add(offlinePlayer.getName());
+                    }
+                }};
+            }
             return null;
         }
     }
