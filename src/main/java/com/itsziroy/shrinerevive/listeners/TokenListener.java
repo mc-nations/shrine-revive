@@ -1,18 +1,19 @@
 package com.itsziroy.shrinerevive.listeners;
 
-import com.itsziroy.shrinerevive.ItemKeys;
+import com.itsziroy.shrinerevive.ItemKey;
 import com.itsziroy.shrinerevive.ShrineRevive;
 import com.itsziroy.shrinerevive.events.ShrineTokenPickedUpEvent;
 import com.itsziroy.shrinerevive.items.ShrineReviveToken;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.entity.EntityPickupItemEvent;
-import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.entity.*;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.persistence.PersistentDataType;
 
 import java.util.UUID;
 
@@ -27,12 +28,10 @@ public class TokenListener implements Listener {
         if(event.getEntity().getType() == EntityType.PLAYER) {
             ItemMeta itemMeta = event.getItem().getItemStack().getItemMeta();
             if(itemMeta != null) {
-                String playerUid = event.getItem().getItemStack().getItemMeta().getPersistentDataContainer().get(ItemKeys.REVIVE_TOKEN, PersistentDataType.STRING);
+                String playerUid = itemMeta.getPersistentDataContainer().get(ItemKey.REVIVE_TOKEN.key(), ItemKey.REVIVE_TOKEN.dataType());
                 if (playerUid != null) {
-                    OfflinePlayer player = plugin.getServer().getPlayer(UUID.fromString(playerUid));
-                    if (player != null) {
-                        plugin.getRedis().getMessanger().send(new ShrineTokenPickedUpEvent(player, (Player) event.getEntity()));
-                    }
+                    OfflinePlayer player = plugin.getServer().getOfflinePlayer(UUID.fromString(playerUid));
+                    plugin.getRedis().getMessanger().send(new ShrineTokenPickedUpEvent(player, (Player) event.getEntity()));
                 }
             }
         }
@@ -43,4 +42,24 @@ public class TokenListener implements Listener {
         event.getDrops().add(reviveToken.getItemStack(1));
     }
 
+    @EventHandler
+    public void onEntityDropped(ItemSpawnEvent event) {
+        Item item = event.getEntity();
+        if(ItemKey.itemHasKey(ItemKey.REVIVE_TOKEN, item)){
+                // Make Item indestructible
+                item.setInvulnerable(true);
+                item.setGlowing(true);
+                item.setGravity(true);
+                item.setUnlimitedLifetime(true);
+            }
+    }
+    @EventHandler
+    public void onItemPlaced(BlockPlaceEvent event) {
+        ItemStack item = event.getItemInHand();
+
+        if(ItemKey.itemHasKey(ItemKey.REVIVE_TOKEN, item)) {
+            event.setCancelled(true);
+            event.getPlayer().sendMessage("Player Tokens cannot be placed!");
+        }
+    }
 }

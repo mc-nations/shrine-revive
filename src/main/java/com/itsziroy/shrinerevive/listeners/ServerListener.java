@@ -20,7 +20,7 @@ public class ServerListener implements Listener {
     }
 
     @EventHandler
-    public void onePreJoin(PlayerLoginEvent event) {
+    public void onPrejoin(PlayerLoginEvent event) {
         Player player = event.getPlayer();
         if (plugin.getPlayerManager().isDead(player)) {
             if(!Command.hasPermission(player, "shrine.bypass_death")) {

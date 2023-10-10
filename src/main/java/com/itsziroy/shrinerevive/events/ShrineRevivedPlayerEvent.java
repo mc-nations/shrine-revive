@@ -2,7 +2,6 @@ package com.itsziroy.shrinerevive.events;
 
 import com.itsziroy.bukkitredis.events.ExtensibleEvent;
 import com.itsziroy.bukkitredis.events.SimplePlayer;
-import com.itsziroy.bukkitredis.events.SimplePlayer;
 
 public class ShrineRevivedPlayerEvent extends ExtensibleEvent {
 
