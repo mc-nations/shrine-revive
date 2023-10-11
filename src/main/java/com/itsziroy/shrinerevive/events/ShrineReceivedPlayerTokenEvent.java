@@ -11,7 +11,6 @@ public class ShrineReceivedPlayerTokenEvent extends ShrineOfflinePlayerBaseEvent
     public ShrineReceivedPlayerTokenEvent(OfflinePlayer tokenPlayer) {
         super(NAME, tokenPlayer);
         this.put("revive_time", ShrineRevive.SHRINE_REVIVE_TIMEOUT);
-        this.executeCallbacks();
     }
 
 }

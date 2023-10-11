@@ -1,23 +1,21 @@
 package com.itsziroy.shrinerevive.events;
 
 import com.itsziroy.bukkitredis.events.ExtensibleEvent;
-import com.itsziroy.bukkitredis.events.SimplePlayer;
+import com.itsziroy.bukkitredis.events.player.MinecraftPlayer;
 
 public class ShrineRevivedPlayerEvent extends ExtensibleEvent {
 
     public static String NAME = "shrine_revived_player";
 
-    private final SimplePlayer simplePlayer;
+    private final MinecraftPlayer minecraftPlayer;
     public ShrineRevivedPlayerEvent(String uuid, String name) {
         super(NAME);
-        this.simplePlayer = new SimplePlayer(uuid, name);
+        this.minecraftPlayer = new MinecraftPlayer(uuid, name);
 
-        this.put("minecraft_user", simplePlayer);
-
-        this.executeCallbacks();
+        this.put("minecraft_user", minecraftPlayer);
     }
 
-    public SimplePlayer getSimplePlayer() {
-        return simplePlayer;
+    public MinecraftPlayer getMinecraftPlayer() {
+        return minecraftPlayer;
     }
 }

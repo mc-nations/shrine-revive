@@ -1,6 +1,6 @@
 package com.itsziroy.shrinerevive.events;
 
-import com.itsziroy.bukkitredis.events.SimplePlayer;
+import com.itsziroy.bukkitredis.events.player.MinecraftPlayer;
 import com.itsziroy.shrinerevive.ShrineRevive;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
@@ -18,8 +18,7 @@ public class ShrineTokenPickedUpEvent extends ShrineOfflinePlayerBaseEvent {
         ShrineRevive.getInstance().getLogger().info(actionPlayer.toString());
 
         this.put("revive_time", ShrineRevive.SHRINE_REVIVE_TIMEOUT);
-        this.put(KEY_ACTION_USER, new SimplePlayer(actionPlayer.getUniqueId().toString(), actionPlayer.getName()));
-        this.executeCallbacks();
+        this.put(KEY_ACTION_USER, new MinecraftPlayer(actionPlayer.getUniqueId().toString(), actionPlayer.getName()));
     }
 
     public Player getActionPlayer() {

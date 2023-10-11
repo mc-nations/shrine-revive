@@ -1,7 +1,7 @@
 package com.itsziroy.shrinerevive.events;
 
 import com.itsziroy.bukkitredis.events.ExtensibleEvent;
-import com.itsziroy.bukkitredis.events.SimplePlayer;
+import com.itsziroy.bukkitredis.events.player.MinecraftPlayer;
 import org.bukkit.OfflinePlayer;
 
 public class ShrineOfflinePlayerBaseEvent extends ExtensibleEvent {
@@ -15,9 +15,7 @@ public class ShrineOfflinePlayerBaseEvent extends ExtensibleEvent {
         super(name);
         this.tokenPlayer = offlinePlayer;
 
-        this.put(KEY_TOKEN_USER, new SimplePlayer(offlinePlayer.getUniqueId().toString(), offlinePlayer.getName()));
-
-        this.executeCallbacks(ShrineOfflinePlayerBaseEvent.class);
+        this.put(KEY_TOKEN_USER, new MinecraftPlayer(offlinePlayer.getUniqueId().toString(), offlinePlayer.getName()));
     }
 
 
