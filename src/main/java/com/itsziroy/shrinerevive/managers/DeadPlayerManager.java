@@ -79,6 +79,10 @@ public class DeadPlayerManager {
         try {
             File file = new File(this.plugin.getDataFolder(), "dead_players.json");
 
+            if(deadPlayers.isEmpty()) {
+                Files.writeString(file.toPath(),"");
+                return;
+            }
             ObjectMapper mapper = new ObjectMapper();
             String str = mapper.writeValueAsString(deadPlayers);
 

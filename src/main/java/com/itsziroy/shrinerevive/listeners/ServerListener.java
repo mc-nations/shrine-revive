@@ -33,8 +33,8 @@ public class ServerListener implements Listener {
                 }
                 if(ShrineRevive.SHRINE_REVIVE_TIMEOUT_NO_TOKEN > 0) {
                     playerTime = plugin.getDeadPlayerManager().get(player);
-                    event.disallow(PlayerLoginEvent.Result.KICK_OTHER, DeadPlayerManager.DEATH_REVIVE_MESSAGE_TOKEN(
-                            ShrineRevive.SHRINE_REVIVE_TIMEOUT - (Calendar.getInstance().getTimeInMillis() - playerTime.time())
+                    event.disallow(PlayerLoginEvent.Result.KICK_OTHER, DeadPlayerManager.DEATH_REVIVE_MESSAGE_NO_TOKEN(
+                            ShrineRevive.SHRINE_REVIVE_TIMEOUT_NO_TOKEN - (Calendar.getInstance().getTimeInMillis() - playerTime.time())
                     ));
                     return;
                 }
