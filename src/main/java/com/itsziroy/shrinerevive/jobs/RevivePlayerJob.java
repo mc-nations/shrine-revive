@@ -14,16 +14,28 @@ public class RevivePlayerJob extends Job {
     }
     @Override
     public void run() {
-        Set<PlayerTime> playerTimeSet = this.plugin.getShrineTimeManager().getTimers();
-
-        for (PlayerTime playerTime: playerTimeSet) {
-            Calendar currentTime = Calendar.getInstance();
+        Set<PlayerTime> playerShrineReviveTimeSet = this.plugin.getShrineTimeManager().getTimers();
+        Set<PlayerTime> playerDeathTimeSet = this.plugin.getDeadPlayerManager().getDeadPlayers();
+        Calendar currentTime = Calendar.getInstance();
+        for (PlayerTime playerTime: playerShrineReviveTimeSet) {
             if(currentTime.getTimeInMillis() - playerTime.time() > ShrineRevive.SHRINE_REVIVE_TIMEOUT) {
-                this.plugin.getPlayerManager().removeDeadPlayer(playerTime.uuid());
-                this.plugin.getShrineTimeManager().endRevive(playerTime.uuid());
-
-                plugin.getRedis().getMessanger().send(new ShrineRevivedPlayerEvent(playerTime.uuid(), playerTime.name()));
+               this.revivePlayer(playerTime);
             }
         }
+
+        if(ShrineRevive.SHRINE_REVIVE_TIMEOUT_NO_TOKEN > 0) {
+            for (PlayerTime playerTime : playerDeathTimeSet) {
+                if (currentTime.getTimeInMillis() - playerTime.time() > ShrineRevive.SHRINE_REVIVE_TIMEOUT_NO_TOKEN) {
+                    this.revivePlayer(playerTime);
+                }
+            }
+        }
+    }
+
+    private void revivePlayer(PlayerTime playerTime) {
+        this.plugin.getDeadPlayerManager().removeDeadPlayer(playerTime.uuid());
+        this.plugin.getShrineTimeManager().endRevive(playerTime.uuid());
+
+        plugin.getRedis().getMessanger().send(new ShrineRevivedPlayerEvent(playerTime.uuid(), playerTime.name()));
     }
 }

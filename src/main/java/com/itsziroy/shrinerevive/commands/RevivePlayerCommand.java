@@ -17,8 +17,8 @@ public class RevivePlayerCommand extends Command{
     public boolean execute(CommandSender sender, String[] args) {
         OfflinePlayer player = plugin.getServer().getOfflinePlayer(args[0]);
         if (player != null) {
-            if(plugin.getPlayerManager().isDead(player)) {
-                plugin.getPlayerManager().removeDeadPlayer(player);
+            if(plugin.getDeadPlayerManager().isDead(player)) {
+                plugin.getDeadPlayerManager().removeDeadPlayer(player);
                 plugin.getShrineTimeManager().endRevive(player);
 
                 plugin.getRedis().getMessanger().send(new ShrineRevivedPlayerEvent(player.getUniqueId().toString(), player.getName()));

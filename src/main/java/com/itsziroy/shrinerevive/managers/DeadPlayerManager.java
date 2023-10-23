@@ -3,6 +3,7 @@ package com.itsziroy.shrinerevive.managers;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.itsziroy.shrinerevive.ShrineRevive;
+import com.itsziroy.shrinerevive.util.PlayerTime;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
@@ -13,13 +14,23 @@ import java.nio.file.Files;
 import java.time.Duration;
 import java.util.*;
 
-public class PlayerManager {
+public class DeadPlayerManager {
 
     public static String DEATH_KICK_MESSAGE = ChatColor.RED + "You died. \n\n" +
             ChatColor.GRAY + "A player needs to pick up your token and bring it to one of the shrines on the map to revive you. " +
             "You will be updated on the status of your token via Discord.";
 
-    public static String DEATH_REVIVE_MESSAGE(long time) {
+    public static String DEATH_REVIVE_MESSAGE_NO_TOKEN(long time) {
+        Duration duration = Duration.ofMillis(time);
+        long HH = duration.toHours();
+        long MM = duration.toMinutesPart();
+        String timeString = HH + ":" + MM;
+
+        return ChatColor.RED + "You died. \n\n" +
+                ChatColor.GRAY + "If a player does not pick up your token, you will be revived in " + ChatColor.AQUA + timeString;
+    }
+
+    public static String DEATH_REVIVE_MESSAGE_TOKEN(long time) {
         Duration duration = Duration.ofMillis(time);
         long HH = duration.toHours();
         long MM = duration.toMinutesPart();
@@ -30,14 +41,14 @@ public class PlayerManager {
     }
     private final ShrineRevive plugin;
 
-    private Set<String> deadPlayers = new HashSet<>();
+    private Set<PlayerTime> deadPlayers = new HashSet<>();
 
-    public PlayerManager(ShrineRevive plugin) {
+    public DeadPlayerManager(ShrineRevive plugin) {
         this.plugin = plugin;
     }
 
 
-    public Set<String> getDeadPlayers() {
+    public Set<PlayerTime> getDeadPlayers() {
         return deadPlayers;
     }
     public void loadDeadPlayers() {
@@ -59,7 +70,8 @@ public class PlayerManager {
     }
 
     public void addDeadPlayer(Player player) {
-        this.deadPlayers.add(player.getUniqueId().toString());
+        long time = Calendar.getInstance().getTimeInMillis();
+        this.deadPlayers.add(new PlayerTime(player.getUniqueId().toString(), player.getName(), time));
         this.write();
     }
 
@@ -76,25 +88,33 @@ public class PlayerManager {
             throw new RuntimeException(e);
         }
     }
+    public PlayerTime get(OfflinePlayer player) {
+        for(PlayerTime playerTime: this.deadPlayers) {
+            if(playerTime.uuid().equals(player.getUniqueId().toString())) {
+                return playerTime;
+            }
+        }
+        return null;
+    }
 
     public boolean isDead(Player player) {
-        return this.deadPlayers.contains(player.getUniqueId().toString());
+        return this.get(player) != null;
     }
     public boolean isDead(OfflinePlayer player) {
-        return this.deadPlayers.contains(player.getUniqueId().toString());
+        return this.get(player) != null;
     }
 
     public void removeDeadPlayer(Player player) {
-        this.deadPlayers.remove(player.getUniqueId().toString());
+        this.deadPlayers.removeIf(o -> o.uuid().equals(player.getUniqueId().toString()));
         this.write();
     }
     public void removeDeadPlayer(OfflinePlayer player) {
-        this.deadPlayers.remove(player.getUniqueId().toString());
+        this.deadPlayers.removeIf(o -> o.uuid().equals(player.getUniqueId().toString()));
         this.write();
     }
 
     public void removeDeadPlayer(String player) {
-        this.deadPlayers.remove(player);
+        this.deadPlayers.removeIf(o -> o.uuid().equals(player));
         this.write();
     }
 

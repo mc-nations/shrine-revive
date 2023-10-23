@@ -8,8 +8,9 @@ import com.itsziroy.shrinerevive.listeners.ServerListener;
 import com.itsziroy.shrinerevive.listeners.ShrineListener;
 import com.itsziroy.shrinerevive.listeners.TokenListener;
 import com.itsziroy.shrinerevive.managers.CommandManager;
-import com.itsziroy.shrinerevive.managers.PlayerManager;
+import com.itsziroy.shrinerevive.managers.DeadPlayerManager;
 import com.itsziroy.shrinerevive.managers.ShrineTimeManager;
+import com.itsziroy.shrinerevive.util.PlayerTime;
 import com.jeff_media.customblockdata.CustomBlockData;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -25,13 +26,14 @@ import java.util.*;
 public final class ShrineRevive extends JavaPlugin {
 
     public static long SHRINE_REVIVE_TIMEOUT = 10000L;
+    public static long SHRINE_REVIVE_TIMEOUT_NO_TOKEN = -1L;
 
     private final CommandManager commandManager = new CommandManager();
     private BukkitRedisPlugin bukkitRedis;
 
     private File dataFolder;
 
-    private final PlayerManager playerManager = new PlayerManager(this);
+    private final DeadPlayerManager deadPlayerManager = new DeadPlayerManager(this);
 
 
     private final ShrineTimeManager shrineTimeManager = new ShrineTimeManager(this);
@@ -44,7 +46,7 @@ public final class ShrineRevive extends JavaPlugin {
         dataFolder.mkdirs(); // create folder if not exists
 
 
-        playerManager.loadDeadPlayers();
+        deadPlayerManager.loadDeadPlayers();
         shrineTimeManager.loadTimers();
 
         commandManager.registerCommand(new CreateShrineCommand());
@@ -97,8 +99,8 @@ public final class ShrineRevive extends JavaPlugin {
         } else {
             if(Objects.equals(args[0], "revive")) {
                 return new ArrayList<>() {{
-                    for (String playerId: playerManager.getDeadPlayers()) {
-                        OfflinePlayer offlinePlayer = getServer().getOfflinePlayer(UUID.fromString(playerId));
+                    for (PlayerTime playerTime: deadPlayerManager.getDeadPlayers()) {
+                        OfflinePlayer offlinePlayer = getServer().getOfflinePlayer(UUID.fromString(playerTime.uuid()));
                         add(offlinePlayer.getName());
                     }
                 }};
@@ -112,7 +114,9 @@ public final class ShrineRevive extends JavaPlugin {
             this.getConfig().options().copyDefaults(true);
             saveConfig();
         }
-        SHRINE_REVIVE_TIMEOUT = this.getConfig().getLong("revive_time");
+        SHRINE_REVIVE_TIMEOUT = this.getConfig().getLong("revive_time") * 1000;
+        SHRINE_REVIVE_TIMEOUT_NO_TOKEN = this.getConfig().getLong("revive_time_no_token") * 1000;
+
     }
 
     public static ShrineRevive getInstance() {
@@ -123,8 +127,8 @@ public final class ShrineRevive extends JavaPlugin {
         return bukkitRedis;
     }
 
-    public PlayerManager getPlayerManager() {
-        return playerManager;
+    public DeadPlayerManager getDeadPlayerManager() {
+        return deadPlayerManager;
     }
 
     public ShrineTimeManager getShrineTimeManager() {
