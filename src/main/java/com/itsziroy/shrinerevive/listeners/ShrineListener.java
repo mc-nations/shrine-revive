@@ -48,51 +48,47 @@ public class ShrineListener implements Listener {
 
                         plugin.getShrineTimeManager().startRevive(player);
                         plugin.getRedis().getMessanger().send(new ShrineReceivedPlayerTokenEvent(player));
+
+
+                        World world = inventoryHolder.getBlock().getWorld();
+                        Location location = inventoryHolder.getBlock().getLocation().clone();
+
+                        world.strikeLightningEffect(location);
+                        location.setY(location.getBlockY() + 4);
+
+
+                        // Spawn fireworks
+
+                        for (int i = 0; i < 10; i++) {
+                            BukkitRunnable runnable = new BukkitRunnable() {
+                                @Override
+                                public void run() {
+
+                                    location.setX(inventoryHolder.getBlock().getLocation().getX() + Math.random() * 8 - 4);
+                                    location.setY(inventoryHolder.getBlock().getLocation().getY() + Math.random() * 8 - 4);
+
+
+                                    Firework firework = (Firework) world.spawnEntity(location, EntityType.FIREWORK);
+
+                                    FireworkMeta meta = firework.getFireworkMeta();
+
+                                    FireworkEffect.Builder builder = FireworkEffect.builder();
+
+                                    builder.withFlicker().withColor(Color.fromRGB((int) (Math.random() * 16777215)),
+                                                    Color.fromRGB((int) (Math.random() * 16777215)),
+                                                    Color.fromRGB((int) (Math.random() * 16777215)),
+                                                    Color.fromRGB((int) (Math.random() * 16777215))).
+                                            withFade(Color.fromRGB((int) (Math.random() * 16777215))).trail(true).
+                                            with(FireworkEffect.Type.values()[(int) (Math.random() * 4 + 1)]);
+                                    meta.setPower((int) (Math.random() * 2 + 1));
+                                    meta.addEffect(builder.build());
+
+                                    firework.setFireworkMeta(meta);
+                                }
+                            };
+                            runnable.runTaskLater(this.plugin, (long) (20 * i * Math.random()));
+                        }
                     }
-
-                    World world =inventoryHolder.getBlock().getWorld();
-                    Location location = inventoryHolder.getBlock().getLocation().clone();
-
-                    world.strikeLightningEffect(location);
-                    location.setY(location.getBlockY() + 4);
-
-
-                    // Spawn fireworks
-
-                    for (int i = 0; i < 10; i++) {
-                        BukkitRunnable runnable = new BukkitRunnable() {
-
-                            @Override
-                            public void run() {
-
-                                location.setX(inventoryHolder.getBlock().getLocation().getX() + Math.random() * 8 - 4);
-                                location.setY(inventoryHolder.getBlock().getLocation().getY() + Math.random() * 8 - 4);
-
-
-                                Firework firework = (Firework) world.spawnEntity(location, EntityType.FIREWORK);
-
-                                FireworkMeta meta = firework.getFireworkMeta();
-
-                                FireworkEffect.Builder builder = FireworkEffect.builder();
-
-                                builder.withFlicker().withColor(Color.fromRGB((int) (Math.random() * 16777215 )),
-                                                Color.fromRGB((int) (Math.random() * 16777215 )),
-                                                Color.fromRGB((int) (Math.random() * 16777215 )),
-                                                Color.fromRGB((int) (Math.random() * 16777215 ))).
-                                        withFade(Color.fromRGB((int) (Math.random() * 16777215 ))).trail(true).
-                                        with(FireworkEffect.Type.values()[(int) (Math.random() * 4 + 1)]);
-                                meta.setPower((int) (Math.random() * 2 + 1));
-                                meta.addEffect(builder.build());
-
-                                firework.setFireworkMeta(meta);
-                            }
-                        };
-
-                        runnable.runTaskLater(this.plugin, (long) (20 * i * Math.random()));
-
-
-                    }
-
 
                     event.setCancelled(true);
                     event.getItem().remove();
