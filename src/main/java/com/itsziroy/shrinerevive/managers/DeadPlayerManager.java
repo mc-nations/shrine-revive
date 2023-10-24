@@ -51,6 +51,10 @@ public class DeadPlayerManager {
     public Set<PlayerTime> getDeadPlayers() {
         return deadPlayers;
     }
+
+    public boolean isEmpty() {
+        return this.deadPlayers.isEmpty();
+    }
     public void loadDeadPlayers() {
         try {
             File file = new File(this.plugin.getDataFolder(), "dead_players.json");
@@ -93,8 +97,12 @@ public class DeadPlayerManager {
         }
     }
     public PlayerTime get(OfflinePlayer player) {
+        return this.get(player.getUniqueId().toString());
+    }
+
+    public PlayerTime get(String uuid) {
         for(PlayerTime playerTime: this.deadPlayers) {
-            if(playerTime.uuid().equals(player.getUniqueId().toString())) {
+            if(playerTime.uuid().equals(uuid)) {
                 return playerTime;
             }
         }
@@ -106,6 +114,10 @@ public class DeadPlayerManager {
     }
     public boolean isDead(OfflinePlayer player) {
         return this.get(player) != null;
+    }
+
+    public boolean isDead(String uuid) {
+        return this.get(uuid) != null;
     }
 
     public void removeDeadPlayer(Player player) {

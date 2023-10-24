@@ -23,10 +23,12 @@ public class RevivePlayerJob extends Job {
             }
         }
 
+        // option is enabled
         if(ShrineRevive.SHRINE_REVIVE_TIMEOUT_NO_TOKEN > 0) {
             for (PlayerTime playerTime : playerDeathTimeSet) {
                 if (currentTime.getTimeInMillis() - playerTime.time() > ShrineRevive.SHRINE_REVIVE_TIMEOUT_NO_TOKEN) {
                     this.revivePlayer(playerTime);
+                    this.plugin.getShrineTimeManager().removeReviveTokenFromWorld(playerTime.uuid());
                 }
             }
         }

@@ -4,8 +4,11 @@ import com.itsziroy.shrinerevive.ItemKey;
 import com.itsziroy.shrinerevive.ShrineRevive;
 import com.itsziroy.shrinerevive.events.ShrineReceivedPlayerTokenEvent;
 import com.jeff_media.customblockdata.CustomBlockData;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.World;
+import org.bukkit.entity.EntityType;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockPlaceEvent;
@@ -46,6 +49,14 @@ public class ShrineListener implements Listener {
                         plugin.getShrineTimeManager().startRevive(player);
                         plugin.getRedis().getMessanger().send(new ShrineReceivedPlayerTokenEvent(player));
                     }
+
+                    World world =inventoryHolder.getBlock().getWorld();
+                    Location location = inventoryHolder.getBlock().getLocation().clone();
+                    location.setY(world.getHighestBlockYAt(location));
+
+                    world.strikeLightningEffect(location);
+
+                    world.spawnEntity(location, EntityType.FIREWORK);
 
                     event.setCancelled(true);
                     event.getItem().remove();

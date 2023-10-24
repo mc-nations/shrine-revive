@@ -2,6 +2,8 @@ package com.itsziroy.shrinerevive.commands;
 
 import com.itsziroy.shrinerevive.ShrineRevive;
 import com.itsziroy.shrinerevive.events.ShrineRevivedPlayerEvent;
+import com.itsziroy.shrinerevive.jobs.Job;
+import com.itsziroy.shrinerevive.jobs.RemoveTokenFromWorldJob;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 
@@ -22,6 +24,10 @@ public class RevivePlayerCommand extends Command{
                 plugin.getShrineTimeManager().endRevive(player);
 
                 plugin.getRedis().getMessanger().send(new ShrineRevivedPlayerEvent(player.getUniqueId().toString(), player.getName()));
+
+                Job removeTokensFromWorldJob = new RemoveTokenFromWorldJob(plugin, player);
+                removeTokensFromWorldJob.runTask();
+
                 sender.sendMessage("Revived player " + player.getName());
             } else {
                 sender.sendMessage("Player is not dead.");

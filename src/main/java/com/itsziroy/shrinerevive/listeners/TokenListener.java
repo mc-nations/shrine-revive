@@ -12,6 +12,8 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.*;
+import org.bukkit.event.inventory.InventoryOpenEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
@@ -61,5 +63,15 @@ public class TokenListener implements Listener {
             event.setCancelled(true);
             event.getPlayer().sendMessage("Player Tokens cannot be placed!");
         }
+    }
+
+    @EventHandler
+    public void onInventoryOpen(InventoryOpenEvent event) {
+        this.plugin.getShrineTimeManager().removeAnyReviveTokenFromInventory(event.getInventory());
+    }
+
+    @EventHandler
+    public void onPlayerJoin(PlayerJoinEvent event) {
+        this.plugin.getShrineTimeManager().removeAnyReviveTokenFromInventory(event.getPlayer().getInventory());
     }
 }

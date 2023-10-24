@@ -3,6 +3,7 @@ package com.itsziroy.shrinerevive;
 import com.itsziroy.bukkitredis.BukkitRedisPlugin;
 import com.itsziroy.shrinerevive.commands.CreateShrineCommand;
 import com.itsziroy.shrinerevive.commands.RevivePlayerCommand;
+import com.itsziroy.shrinerevive.jobs.Job;
 import com.itsziroy.shrinerevive.jobs.RevivePlayerJob;
 import com.itsziroy.shrinerevive.listeners.ServerListener;
 import com.itsziroy.shrinerevive.listeners.ShrineListener;
@@ -66,9 +67,9 @@ public final class ShrineRevive extends JavaPlugin {
 
 
 
-        RevivePlayerJob checkServerUptimeJob = new RevivePlayerJob(this);
+        Job checkServerUptimeJob = new RevivePlayerJob(this);
 
-        checkServerUptimeJob.runTaskTimer(this,0, checkServerUptimeJob.getTickrate());
+        checkServerUptimeJob.runTaskTimer(0);
 
         registerConfig();
     }
