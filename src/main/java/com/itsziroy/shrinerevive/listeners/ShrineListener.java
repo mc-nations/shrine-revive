@@ -4,18 +4,18 @@ import com.itsziroy.shrinerevive.ItemKey;
 import com.itsziroy.shrinerevive.ShrineRevive;
 import com.itsziroy.shrinerevive.events.ShrineReceivedPlayerTokenEvent;
 import com.jeff_media.customblockdata.CustomBlockData;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.OfflinePlayer;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Firework;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.inventory.InventoryPickupItemEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.BlockInventoryHolder;
+import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.persistence.PersistentDataContainer;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.Objects;
 import java.util.UUID;
@@ -52,11 +52,47 @@ public class ShrineListener implements Listener {
 
                     World world =inventoryHolder.getBlock().getWorld();
                     Location location = inventoryHolder.getBlock().getLocation().clone();
-                    location.setY(world.getHighestBlockYAt(location));
 
                     world.strikeLightningEffect(location);
+                    location.setY(location.getBlockY() + 4);
 
-                    world.spawnEntity(location, EntityType.FIREWORK);
+
+                    // Spawn fireworks
+
+                    for (int i = 0; i < 10; i++) {
+                        BukkitRunnable runnable = new BukkitRunnable() {
+
+                            @Override
+                            public void run() {
+
+                                location.setX(inventoryHolder.getBlock().getLocation().getX() + Math.random() * 8 - 4);
+                                location.setY(inventoryHolder.getBlock().getLocation().getY() + Math.random() * 8 - 4);
+
+
+                                Firework firework = (Firework) world.spawnEntity(location, EntityType.FIREWORK);
+
+                                FireworkMeta meta = firework.getFireworkMeta();
+
+                                FireworkEffect.Builder builder = FireworkEffect.builder();
+
+                                builder.withFlicker().withColor(Color.fromRGB((int) (Math.random() * 16777215 )),
+                                                Color.fromRGB((int) (Math.random() * 16777215 )),
+                                                Color.fromRGB((int) (Math.random() * 16777215 )),
+                                                Color.fromRGB((int) (Math.random() * 16777215 ))).
+                                        withFade(Color.fromRGB((int) (Math.random() * 16777215 ))).trail(true).
+                                        with(FireworkEffect.Type.values()[(int) (Math.random() * 4 + 1)]);
+                                meta.setPower((int) (Math.random() * 2 + 1));
+                                meta.addEffect(builder.build());
+
+                                firework.setFireworkMeta(meta);
+                            }
+                        };
+
+                        runnable.runTaskLater(this.plugin, (long) (20 * i * Math.random()));
+
+
+                    }
+
 
                     event.setCancelled(true);
                     event.getItem().remove();
