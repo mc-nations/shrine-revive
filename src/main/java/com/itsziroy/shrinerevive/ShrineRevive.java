@@ -32,8 +32,6 @@ public final class ShrineRevive extends JavaPlugin {
     private final CommandManager commandManager = new CommandManager();
     private BukkitRedisPlugin bukkitRedis;
 
-    private File dataFolder;
-
     private final DeadPlayerManager deadPlayerManager = new DeadPlayerManager(this);
 
 
@@ -43,12 +41,9 @@ public final class ShrineRevive extends JavaPlugin {
     public void onEnable() {
         // Plugin startup logic
 
-        dataFolder = new File(getDataFolder(), "data"); // get folder "plugins/MyPlugin/data"
-        dataFolder.mkdirs(); // create folder if not exists
 
-
-        deadPlayerManager.loadDeadPlayers();
-        shrineTimeManager.loadTimers();
+        deadPlayerManager.load();
+        shrineTimeManager.load();
 
         commandManager.registerCommand(new CreateShrineCommand());
         commandManager.registerCommand(new RevivePlayerCommand(this));
