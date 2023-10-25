@@ -14,7 +14,7 @@ public class RevivePlayerJob extends Job {
     }
     @Override
     public void run() {
-        Set<PlayerTime> playerShrineReviveTimeSet = this.plugin.getShrineTimeManager().getTimers();
+        Set<PlayerTime> playerShrineReviveTimeSet = this.plugin.getShrineTimeManager().getData();
         Set<PlayerTime> playerDeathTimeSet = this.plugin.getDeadPlayerManager().getDeadPlayers();
         Calendar currentTime = Calendar.getInstance();
         for (PlayerTime playerTime: playerShrineReviveTimeSet) {
