@@ -82,7 +82,6 @@ public class ShrineListener implements Listener {
     }
 
     private void shrinePickedUpItem(Inventory inventory, ItemStack itemStack, ShrineReviveCallback callback) {
-        plugin.getLogger().info("shrine picked up item");
         if(inventory.getType().equals(InventoryType.HOPPER)) {
             // Inventory is hopper
             BlockInventoryHolder inventoryHolder = (BlockInventoryHolder) inventory.getHolder();

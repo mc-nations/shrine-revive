@@ -9,6 +9,7 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.*;
@@ -38,10 +39,11 @@ public class TokenListener implements Listener {
             }
         }
     }
-    @EventHandler
+    @EventHandler(priority = EventPriority.LOW)
     public void onPlayerDied(PlayerDeathEvent event) {
         ShrineReviveToken reviveToken = new ShrineReviveToken(event.getEntity());
         event.getDrops().add(reviveToken.getItemStack(1));
+        event.getEntity().getInventory().clear();
     }
 
     @EventHandler
