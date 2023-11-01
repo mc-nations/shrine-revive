@@ -71,6 +71,8 @@ public class ServerListener implements Listener {
                     if (plugin.getConfig().getBoolean(Config.Path.NO_TOKEN_PUNISHMENT_ENABLED)) {
                         String potionType = plugin.getConfig().getString(Config.Path.NO_TOKEN_PUNISHMENT_TYPE);
                         int potionDuration = plugin.getConfig().getInt(Config.Path.NO_TOKEN_PUNISHMENT_DURATION);
+                        int amplifier = plugin.getConfig().getInt(Config.Path.NO_TOKEN_PUNISHMENT_AMPLIFIER);
+
                         if (potionType == null) {
                             plugin.getLogger().warning("Potion type is not set in config.yml.");
                         } else {
@@ -79,7 +81,7 @@ public class ServerListener implements Listener {
                                 plugin.getLogger().warning("Potion type " + potionType + " is not valid.");
                             } else {
                                 Bukkit.getScheduler().runTaskLater(this.plugin, () ->
-                                        player.addPotionEffect(new PotionEffect(potionEffectType, 20 * potionDuration, 1)), 10);
+                                        player.addPotionEffect(new PotionEffect(potionEffectType, 20 * potionDuration, amplifier)), 10);
 
                                 String message = plugin.getConfig().getString(Config.Path.NO_TOKEN_PUNISHMENT_MESSAGE);
                                 if (message != null) {
@@ -89,12 +91,11 @@ public class ServerListener implements Listener {
                         }
                     }
                 }
-
-                plugin.getRevivedPlayerManager().remove(player);
-                Job removeTokensFromWorldJob = new RemoveTokenFromWorldJob(plugin, player);
-                removeTokensFromWorldJob.runTaskLater(10);
             }
         }
+        plugin.getRevivedPlayerManager().remove(player);
+        Job removeTokensFromWorldJob = new RemoveTokenFromWorldJob(plugin, player);
+        removeTokensFromWorldJob.runTaskLater(10);
     }
 
     @EventHandler

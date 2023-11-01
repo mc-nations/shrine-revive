@@ -5,4 +5,5 @@ no_token_punishment:
   enabled: true
   type: SLOW_DIGGING
   duration: 3600
+  amplifier: 0
   message: "Du wurdest ohne Token wiederbelebt. Die Kraft des shrines ist nicht mit dir."
