@@ -52,10 +52,10 @@ public class DeadPlayerManager extends JSONManager<PlayerTime> {
 
     public void addDeadPlayer(Player player) {
         long time = Calendar.getInstance().getTimeInMillis();
-        if(!this.isDead(player)) {
-            this.data.add(new PlayerTime(player.getUniqueId().toString(), player.getName(), time));
-            this.write();
-        }
+
+        this.data.add(new PlayerTime(player.getUniqueId().toString(), player.getName(), time));
+        this.write();
+
     }
 
     public PlayerTime get(OfflinePlayer player) {
