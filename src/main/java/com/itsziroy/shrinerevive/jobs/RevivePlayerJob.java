@@ -22,6 +22,7 @@ public class RevivePlayerJob extends Job {
         for (PlayerTime playerTime: playerShrineReviveTimeSet) {
             if(currentTime.getTimeInMillis() - playerTime.time() > ShrineRevive.SHRINE_REVIVE_TIMEOUT) {
                this.revivePlayer(playerTime);
+                plugin.getRedis().getMessanger().send(new ShrineRevivedPlayerEvent(playerTime.uuid(), playerTime.name(), ReviveType.SHRINE));
             }
         }
 
@@ -33,6 +34,8 @@ public class RevivePlayerJob extends Job {
                     this.plugin.getRevivedPlayerManager().add(new RevivedPlayer(playerTime.uuid(), playerTime.name(), ReviveType.TIMER));
                     this.plugin.getShrineTimeManager().removeReviveTokenFromWorld(playerTime.uuid());
                     this.plugin.getShrineTimeManager().removeReviveTokenFromOnlinePlayers(playerTime.uuid());
+
+                    plugin.getRedis().getMessanger().send(new ShrineRevivedPlayerEvent(playerTime.uuid(), playerTime.name(), ReviveType.TIMER));
                 }
             }
         }
@@ -41,7 +44,5 @@ public class RevivePlayerJob extends Job {
     private void revivePlayer(PlayerTime playerTime) {
         this.plugin.getDeadPlayerManager().removeDeadPlayer(playerTime.uuid());
         this.plugin.getShrineTimeManager().endRevive(playerTime.uuid());
-
-        plugin.getRedis().getMessanger().send(new ShrineRevivedPlayerEvent(playerTime.uuid(), playerTime.name()));
     }
 }

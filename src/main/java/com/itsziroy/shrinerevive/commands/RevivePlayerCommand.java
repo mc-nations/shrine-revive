@@ -28,11 +28,11 @@ public class RevivePlayerCommand extends Command{
                 plugin.getShrineTimeManager().endRevive(player);
                 if(args.length > 1 && Objects.equals(args[1], "true")) {
                     plugin.getRevivedPlayerManager().add(new RevivedPlayer(player, ReviveType.TIMER));
+                    plugin.getRedis().getMessanger().send(new ShrineRevivedPlayerEvent(player.getUniqueId().toString(), player.getName(), ReviveType.TIMER));
                 } else {
                     plugin.getRevivedPlayerManager().add(new RevivedPlayer(player, ReviveType.COMMAND));
+                    plugin.getRedis().getMessanger().send(new ShrineRevivedPlayerEvent(player.getUniqueId().toString(), player.getName(), ReviveType.COMMAND));
                 }
-
-                plugin.getRedis().getMessanger().send(new ShrineRevivedPlayerEvent(player.getUniqueId().toString(), player.getName()));
 
                 Job removeTokensFromWorldJob = new RemoveTokenFromWorldJob(plugin, player);
                 removeTokensFromWorldJob.runTask();
