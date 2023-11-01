@@ -3,6 +3,8 @@ package com.itsziroy.shrinerevive.jobs;
 import com.itsziroy.shrinerevive.ShrineRevive;
 import com.itsziroy.shrinerevive.events.ShrineRevivedPlayerEvent;
 import com.itsziroy.shrinerevive.util.PlayerTime;
+import com.itsziroy.shrinerevive.util.ReviveType;
+import com.itsziroy.shrinerevive.util.RevivedPlayer;
 
 import java.util.Calendar;
 import java.util.Set;
@@ -10,7 +12,7 @@ import java.util.Set;
 public class RevivePlayerJob extends Job {
 
     public RevivePlayerJob(ShrineRevive plugin) {
-        super(plugin, 1200);
+        super(plugin, 100);
     }
     @Override
     public void run() {
@@ -28,7 +30,9 @@ public class RevivePlayerJob extends Job {
             for (PlayerTime playerTime : playerDeathTimeSet) {
                 if (currentTime.getTimeInMillis() - playerTime.time() > ShrineRevive.SHRINE_REVIVE_TIMEOUT_NO_TOKEN) {
                     this.revivePlayer(playerTime);
+                    this.plugin.getRevivedPlayerManager().add(new RevivedPlayer(playerTime.uuid(), playerTime.name(), ReviveType.TIMER));
                     this.plugin.getShrineTimeManager().removeReviveTokenFromWorld(playerTime.uuid());
+                    this.plugin.getShrineTimeManager().removeReviveTokenFromOnlinePlayers(playerTime.uuid());
                 }
             }
         }

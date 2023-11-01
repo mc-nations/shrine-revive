@@ -4,8 +4,12 @@ import com.itsziroy.shrinerevive.ShrineRevive;
 import com.itsziroy.shrinerevive.events.ShrineRevivedPlayerEvent;
 import com.itsziroy.shrinerevive.jobs.Job;
 import com.itsziroy.shrinerevive.jobs.RemoveTokenFromWorldJob;
+import com.itsziroy.shrinerevive.util.ReviveType;
+import com.itsziroy.shrinerevive.util.RevivedPlayer;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
+
+import java.util.Objects;
 
 public class RevivePlayerCommand extends Command{
     private final ShrineRevive plugin;
@@ -22,6 +26,11 @@ public class RevivePlayerCommand extends Command{
             if(plugin.getDeadPlayerManager().isDead(player)) {
                 plugin.getDeadPlayerManager().removeDeadPlayer(player);
                 plugin.getShrineTimeManager().endRevive(player);
+                if(args.length > 1 && Objects.equals(args[1], "true")) {
+                    plugin.getRevivedPlayerManager().add(new RevivedPlayer(player, ReviveType.TIMER));
+                } else {
+                    plugin.getRevivedPlayerManager().add(new RevivedPlayer(player, ReviveType.COMMAND));
+                }
 
                 plugin.getRedis().getMessanger().send(new ShrineRevivedPlayerEvent(player.getUniqueId().toString(), player.getName()));
 

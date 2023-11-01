@@ -33,6 +33,7 @@ public class ShrineTimeManager extends JSONManager<PlayerTime> {
         this.write();
     }
 
+
     public void endRevive(OfflinePlayer player) {
         this.data.removeIf(o -> o.uuid().equals(player.getUniqueId().toString()));
         this.write();

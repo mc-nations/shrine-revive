@@ -4,6 +4,8 @@ import com.itsziroy.shrinerevive.ItemKey;
 import com.itsziroy.shrinerevive.ShrineRevive;
 import com.itsziroy.shrinerevive.events.ShrineReceivedPlayerTokenEvent;
 import com.itsziroy.shrinerevive.jobs.SpawnRandomFireworks;
+import com.itsziroy.shrinerevive.util.ReviveType;
+import com.itsziroy.shrinerevive.util.RevivedPlayer;
 import com.itsziroy.shrinerevive.util.ShrineReviveCallback;
 import com.jeff_media.customblockdata.CustomBlockData;
 import org.bukkit.*;
@@ -97,13 +99,19 @@ public class ShrineListener implements Listener {
                     // Dropped Item is Skull
                     if(playerUid != null) {
                         OfflinePlayer player = plugin.getServer().getOfflinePlayer(UUID.fromString(playerUid));
+                        Location location = inventoryHolder.getBlock().getLocation().clone();
+                        World world = inventoryHolder.getBlock().getWorld();
+
+                        Location reviveLocation = location.clone();
+                        reviveLocation.setY(reviveLocation.getBlockY() + 1);
+
 
                         plugin.getShrineTimeManager().startRevive(player);
+                        plugin.getRevivedPlayerManager().add(new RevivedPlayer(player, ReviveType.SHRINE, reviveLocation));
                         plugin.getRedis().getMessanger().send(new ShrineReceivedPlayerTokenEvent(player));
 
 
-                        World world = inventoryHolder.getBlock().getWorld();
-                        Location location = inventoryHolder.getBlock().getLocation().clone();
+
 
                         world.strikeLightningEffect(location);
                         location.setY(location.getBlockY() + 4);

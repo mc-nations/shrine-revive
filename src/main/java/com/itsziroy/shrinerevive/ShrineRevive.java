@@ -10,6 +10,7 @@ import com.itsziroy.shrinerevive.listeners.ShrineListener;
 import com.itsziroy.shrinerevive.listeners.TokenListener;
 import com.itsziroy.shrinerevive.managers.CommandManager;
 import com.itsziroy.shrinerevive.managers.DeadPlayerManager;
+import com.itsziroy.shrinerevive.managers.RevivedPlayerManager;
 import com.itsziroy.shrinerevive.managers.ShrineTimeManager;
 import com.itsziroy.shrinerevive.util.PlayerTime;
 import com.jeff_media.customblockdata.CustomBlockData;
@@ -33,9 +34,8 @@ public final class ShrineRevive extends JavaPlugin {
     private BukkitRedisPlugin bukkitRedis;
 
     private final DeadPlayerManager deadPlayerManager = new DeadPlayerManager(this);
-
-
     private final ShrineTimeManager shrineTimeManager = new ShrineTimeManager(this);
+    private final RevivedPlayerManager revivedPlayerManager = new RevivedPlayerManager(this);
 
     @Override
     public void onEnable() {
@@ -44,6 +44,7 @@ public final class ShrineRevive extends JavaPlugin {
 
         deadPlayerManager.load();
         shrineTimeManager.load();
+
 
         commandManager.registerCommand(new CreateShrineCommand());
         commandManager.registerCommand(new RevivePlayerCommand(this));
@@ -62,9 +63,9 @@ public final class ShrineRevive extends JavaPlugin {
 
 
 
-        Job checkServerUptimeJob = new RevivePlayerJob(this);
+        Job revivePlayerJob = new RevivePlayerJob(this);
 
-        checkServerUptimeJob.runTaskTimer(0);
+        revivePlayerJob.runTaskTimer(0);
 
         registerConfig();
     }
@@ -129,5 +130,9 @@ public final class ShrineRevive extends JavaPlugin {
 
     public ShrineTimeManager getShrineTimeManager() {
         return shrineTimeManager;
+    }
+
+    public RevivedPlayerManager getRevivedPlayerManager() {
+        return revivedPlayerManager;
     }
 }
