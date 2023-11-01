@@ -38,7 +38,7 @@ public class DeadPlayerManager extends JSONManager<PlayerTime> {
     public static String FILE_LOCATION = "dead_players.json";
 
     public DeadPlayerManager(ShrineRevive plugin) {
-        super(plugin, FILE_LOCATION);
+        super(plugin, FILE_LOCATION, PlayerTime.class);
     }
 
 
@@ -52,6 +52,11 @@ public class DeadPlayerManager extends JSONManager<PlayerTime> {
 
     public void addDeadPlayer(Player player) {
         long time = Calendar.getInstance().getTimeInMillis();
+
+        for(PlayerTime playerTime: this.data) {
+            this.plugin.getLogger().info(String.valueOf(playerTime.hashCode()));
+            this.plugin.getLogger().info(String.valueOf((new PlayerTime(player.getUniqueId().toString(), player.getName(), time).equals(playerTime))));
+        }
 
         this.data.add(new PlayerTime(player.getUniqueId().toString(), player.getName(), time));
         this.write();

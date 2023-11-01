@@ -16,7 +16,7 @@ public class ShrineTimeManager extends JSONManager<PlayerTime> {
     public static String FILE_LOCATION = "timers.json";
 
     public ShrineTimeManager(ShrineRevive plugin) {
-        super(plugin, FILE_LOCATION);
+        super(plugin, FILE_LOCATION, PlayerTime.class);
     }
 
     public PlayerTime get(OfflinePlayer player) {

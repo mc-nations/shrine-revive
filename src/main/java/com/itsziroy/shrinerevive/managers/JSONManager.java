@@ -1,6 +1,5 @@
 package com.itsziroy.shrinerevive.managers;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.itsziroy.shrinerevive.ShrineRevive;
 
@@ -17,9 +16,12 @@ public abstract class JSONManager<T> {
 
     protected Set<T> data = new HashSet<>();
 
-    public JSONManager(ShrineRevive plugin, String file_location) {
+    private final Class<T> cl;
+
+    public JSONManager(ShrineRevive plugin, String file_location, Class<T> cl) {
         this.plugin = plugin;
         this.file_location = file_location;
+        this.cl = cl;
     }
 
     public void write() {
@@ -48,8 +50,8 @@ public abstract class JSONManager<T> {
                 String str = Files.readString(file.toPath());
                 if(!str.isEmpty()) {
                     ObjectMapper mapper = new ObjectMapper();
-                    data = mapper.readValue(str, new TypeReference<>() {
-                    });
+                    this.data = mapper.readValue(str, mapper.getTypeFactory().constructCollectionType(Set.class, cl));
+                    this.plugin.getLogger().info(data.getClass().toString());
                 }
             } else {
                 file.createNewFile();
