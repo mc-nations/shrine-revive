@@ -11,30 +11,30 @@ import java.util.*;
 
 public class DeadPlayerManager extends JSONManager<PlayerTime> {
 
-    public static String DEATH_KICK_MESSAGE = ChatColor.RED + "You died. \n\n" +
-            ChatColor.GRAY + "A player needs to pick up your token and bring it to one of the shrines on the map to revive you. " +
-            "You will be updated on the status of your token via Discord.";
+    public static String DEATH_KICK_MESSAGE = ChatColor.RED + "Du bist gestorben. \n\n" +
+            ChatColor.GRAY + "Ein Spieler muss dein Token aufsammeln und zu einem Shrine bringen, um den Revive Prozess " +
+            "zu beschleunigen. Du wirst \u00fcber den Status deines Tokens per Discord informiert.";
 
     public static String DEATH_REVIVE_MESSAGE_NO_TOKEN(long time) {
-        Duration duration = Duration.ofMillis(time);
-        long HH = duration.toHours();
-        long MM = duration.toMinutesPart();
-        String timeString = HH + ":" + MM;
 
-        return ChatColor.RED + "You died. \n\n" +
-                ChatColor.GRAY + "If a player does not pick up your token, you will be revived in " + ChatColor.AQUA + timeString;
+        return ChatColor.RED + "Du bist gestorben. \n\n" +
+                ChatColor.GRAY + "Sollte dein Token nicht von einem Spieler aufgesammelt werden wirst du in "
+                + ChatColor.AQUA + formatTime(time) + " automatisch wiederbelebt.";
     }
 
     public static String DEATH_REVIVE_MESSAGE_TOKEN(long time) {
+        return ChatColor.RED + "Du bist gestorben. \n\n" +
+                ChatColor.GRAY + "Dein Token wurde aufgehoben und du wirst in " + ChatColor.AQUA + formatTime(time)+ " wiederbelebt";
+    }
+
+    private static String formatTime(long time) {
         Duration duration = Duration.ofMillis(time);
         long HH = duration.toHours();
         long MM = duration.toMinutesPart();
-        String timeString = HH + ":" + MM;
-
-        return ChatColor.RED + "You died. \n\n" +
-                ChatColor.GRAY + "A player has picked up your token and you will be revived in " + ChatColor.AQUA + timeString;
+        String hourPart = HH == 1 ? HH + " Stunde" : HH + " Stunden";
+        String minutePart = MM == 1 ? MM + " Minute" : MM + " Minuten";
+        return hourPart + " und " + minutePart;
     }
-
     public static String FILE_LOCATION = "dead_players.json";
 
     public DeadPlayerManager(ShrineRevive plugin) {
