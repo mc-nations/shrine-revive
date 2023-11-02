@@ -63,9 +63,10 @@ public class ServerListener implements Listener {
         if(!Command.hasPermission(player, "shrine.bypass_death")) {
             if (plugin.getRevivedPlayerManager().isRevived(player)) {
                 RevivedPlayer revivedPlayer = plugin.getRevivedPlayerManager().get(player);
-
+                plugin.getLogger().info("Player " + player.getName() + " is revived. Type:" + revivedPlayer.reviveType());
                 if (revivedPlayer.reviveType() == ReviveType.SHRINE) {
-                    player.teleport(revivedPlayer.getSpawnLocation());
+                    plugin.getLogger().info("Teleporting " + player.getName() + " to shrine."+ revivedPlayer.getSpawnLocation());
+                    Bukkit.getScheduler().runTaskLater(this.plugin, ()  -> player.teleport(revivedPlayer.getSpawnLocation()), 20);
                 }
                 if (revivedPlayer.reviveType() == ReviveType.TIMER) {
                     if (plugin.getConfig().getBoolean(Config.Path.NO_TOKEN_PUNISHMENT_ENABLED)) {
@@ -80,9 +81,10 @@ public class ServerListener implements Listener {
                             if (potionEffectType == null) {
                                 plugin.getLogger().warning("Potion type " + potionType + " is not valid.");
                             } else {
-                                Bukkit.getScheduler().runTaskLater(this.plugin, () ->
-                                        player.addPotionEffect(new PotionEffect(potionEffectType, 20 * potionDuration, amplifier)), 10);
-
+                                Bukkit.getScheduler().runTaskLater(this.plugin, () -> {
+                                        plugin.getLogger().info("Setting potion effect " + potionType + " for " + player.getName() + " for " + potionDuration + " seconds.");
+                                        player.addPotionEffect(new PotionEffect(potionEffectType, 20 * potionDuration, amplifier));
+                                        }, 40);
                                 String message = plugin.getConfig().getString(Config.Path.NO_TOKEN_PUNISHMENT_MESSAGE);
                                 if (message != null) {
                                     player.sendMessage(ChatColor.RED + message);
@@ -92,6 +94,8 @@ public class ServerListener implements Listener {
                     }
                 }
             }
+        } else {
+            plugin.getLogger().info(player.getName() + " bypassed shrine death.");
         }
         plugin.getRevivedPlayerManager().remove(player);
         Job removeTokensFromWorldJob = new RemoveTokenFromWorldJob(plugin, player);

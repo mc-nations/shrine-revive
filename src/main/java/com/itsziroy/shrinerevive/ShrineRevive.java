@@ -43,6 +43,7 @@ public final class ShrineRevive extends JavaPlugin {
 
 
         deadPlayerManager.load();
+        revivedPlayerManager.load();
         shrineTimeManager.load();
 
 
