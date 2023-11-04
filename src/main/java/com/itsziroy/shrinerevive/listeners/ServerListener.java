@@ -65,8 +65,11 @@ public class ServerListener implements Listener {
                 RevivedPlayer revivedPlayer = plugin.getRevivedPlayerManager().get(player);
                 plugin.getLogger().info("Player " + player.getName() + " is revived. Type:" + revivedPlayer.reviveType());
                 if (revivedPlayer.reviveType() == ReviveType.SHRINE) {
-                    plugin.getLogger().info("Teleporting " + player.getName() + " to shrine."+ revivedPlayer.getSpawnLocation());
-                    Bukkit.getScheduler().runTaskLater(this.plugin, ()  -> player.teleport(revivedPlayer.getSpawnLocation()), 20);
+
+                    Bukkit.getScheduler().runTaskLater(this.plugin, ()  -> {
+                        plugin.getLogger().info("Teleporting " + player.getName() + " to shrine."+ revivedPlayer.getSpawnLocation());
+                        player.teleport(revivedPlayer.getSpawnLocation());
+                    }, 70);
                 }
                 if (revivedPlayer.reviveType() == ReviveType.TIMER) {
                     if (plugin.getConfig().getBoolean(Config.Path.NO_TOKEN_PUNISHMENT_ENABLED)) {
